@@ -1,0 +1,23 @@
+{
+  "name": "angular-swagger-client",
+  "homepage": "https://github.com/olaferlandsen/angular-swagger-client",
+  "authors": [
+    "Olaf Erlandsen <olaftriskel@gmail.com>"
+  ],
+  "description": "A simple and powerful swagger client for angular 1.4+",
+  "main": "dist/angular-swagger-clients.js",
+  "keywords": [
+    "angular",
+    "swagger",
+    "openapi",
+    "client",
+    "rest",
+    "restful",
+    "api",
+    "endpoint"
+  ],
+  "license": "Apache 2.0",
+  "dependencies": {
+    "angular": "^1.4"
+  }
+}
