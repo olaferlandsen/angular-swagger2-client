@@ -19,7 +19,7 @@ npm install angular-swagger-client
 ```
 #### Install via Bower
 ```bash
-bower install angular-swagger-client
+bower install angular-swagger2-client
 ```
 
 * Include the required libraries in your `index.html`:
