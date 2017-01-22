@@ -15,7 +15,7 @@ A simple and powerful OpenAPI/Swagger Client for Angular, based on promises to c
 
 #### Install via NPM
 ```bash
-npm install angular-swagger-client
+npm install angular-swagger2-client
 ```
 #### Install via Bower
 ```bash
@@ -29,7 +29,7 @@ bower install angular-swagger2-client
     <head>
         <title>My Angular Application</title>
         <!-- Angular swagger Client -->
-        <script src="vendor/angular-swagger-client/dist/angular-swagger-client.js"></script>
+        <script src="vendor/angular-swagger2-client/dist/angular-swagger2-client.js"></script>
     </head>
     <body>
         ...
@@ -37,11 +37,11 @@ bower install angular-swagger2-client
 </html>
 ```
 > **IMPORTANT:** Where `vendor` you need replace for you downaload directory. If you ussing `bower` replace for `bower_components`, and if you using `npm` you need replace for `node_modules`
-* Inject `angular-swagger-client` module
+* Inject `angular-swagger2-client` module
 
 ```javascript
 angular.module('myApp', [
-	'angular-swagger-client'
+	'angular-swagger2-client'
 ])
 ```
 
@@ -49,9 +49,9 @@ angular.module('myApp', [
 
 ```javascript
 angular.module('myApp', [
-	'angular-swagger-client'
-]).run(function($rootScope, AngularSwaggerClient) {
-	$rootScope.api = new AngularSwaggerClient(YouSwaggerJson);
+	'angular-swagger2-client'
+]).run(function($rootScope, AngularSwagger2Client) {
+	$rootScope.api = new AngularSwagger2Client(YouSwaggerJson);
 })
 ```
 
@@ -61,7 +61,7 @@ angular.module('myApp', [
 ## API
 
 ```javascript
-object AngularSwaggerClient(Object jsonObject[, Object defaultStaticData[, Array defaultDynamicData]])
+object AngularSwagger2Client(Object jsonObject[, Object defaultStaticData[, Array defaultDynamicData]])
 ```
 
 ### Params
