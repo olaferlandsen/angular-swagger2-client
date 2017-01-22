@@ -125,10 +125,10 @@
         return fn;
     }
     angular
-        .module('angular-swagger-client', [])
+        .module('angular-swagger2-client', [])
         .factory('Utils', Utils)
-        .factory('AngularSwaggerClient', AngularSwaggerClient);
-    //AngularSwaggerClient.$inject = ['$http', 'Utils', '$httpParamSerializer', '$q'];
+        .factory('AngularSwagger2Client', AngularSwagger2Client);
+    //AngularSwagger2Client.$inject = ['$http', 'Utils', '$httpParamSerializer', '$q'];
     /**
      *
      * @param {*} $http
@@ -136,7 +136,7 @@
      * @param {*} $httpParamSerializer
      * @param {*} $q
      * */
-    function AngularSwaggerClient($http, Utils, $httpParamSerializer, $q) {
+    function AngularSwagger2Client($http, Utils, $httpParamSerializer, $q) {
         var self = this;
         var swaggerObject;
         var defaultDataObject;
@@ -147,7 +147,7 @@
          * @param {object} defaultData
          * @param {Array} localStorageKeys
          * */
-        var AngularSwaggerClient = function (jsonObject, defaultData, localStorageKeys) {
+        var AngularSwagger2Client = function (jsonObject, defaultData, localStorageKeys) {
             console.info('jsonObject:', jsonObject);
             this.api = {};
             this.host = {};
@@ -163,7 +163,7 @@
         };
         /**
          * */
-        AngularSwaggerClient.prototype.init = function () {
+        AngularSwagger2Client.prototype.init = function () {
             var self = this;
             var scheme = 'http';
             if (swaggerObject.schemes.indexOf('https') > -1) {
@@ -293,7 +293,7 @@
          * @param {string} method
          * @param {object} swaggerRequest
          * */
-        AngularSwaggerClient.prototype.trigger = function (path, method, swaggerRequest) {
+        AngularSwagger2Client.prototype.trigger = function (path, method, swaggerRequest) {
             var serializedUriQuery;
             var self = this;
             if (angular.isObject(defaultDataObject)) {
@@ -326,7 +326,7 @@
             };
             /**
              * By default, $http don't set content-type:application/x-www-form-urlencoded for POST and PUT
-             * So, if you need send a POST or PUT, angular-swagger-client set this header.
+             * So, if you need send a POST or PUT, angular-swagger2-client set this header.
              * Learn more about this case in the link
              * @link http://stackoverflow.com/a/20276775/901197
              * */
@@ -423,6 +423,6 @@
             }
             return promise;
         };
-        return AngularSwaggerClient;
+        return AngularSwagger2Client;
     }
 })(angular);

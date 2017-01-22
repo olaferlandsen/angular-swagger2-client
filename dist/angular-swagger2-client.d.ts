@@ -40,7 +40,7 @@ interface SwaggerObject {
     tags: any;
     externalDocs: ExternalDocsObject;
 }
-interface AngularSwaggerClient {
+interface AngularSwagger2Client {
     init(): any;
     $inject: any;
     api: any;
