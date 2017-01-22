@@ -1,5 +1,5 @@
 {
-  "name": "angular-swagger-client",
+  "name": "angular-swagger2-client",
   "keywords":[
     "angular",
     "swagger",
@@ -12,14 +12,14 @@
   ],
   "repository":{
     "type":"git",
-    "url":"https://github.com/olaferlandsen/angular-swagger-client"
+    "url":"https://github.com/olaferlandsen/angular-swagger2-client"
   },
   "bugs":{
-    "url":"https://github.com/olaferlandsen/angular-swagger-client/issues"
+    "url":"https://github.com/olaferlandsen/angular-swagger2-client/issues"
   },
   "version": "0.0.3",
   "description": "A simple and powerful OpenAPI/Swagger Client for Angular, based on promises to connect with endpoint using OpenAPI/Swagger Specification 2.0.",
-  "main": "./dist/angular-swagger-client.min.js",
+  "main": "./dist/angular-swagger2-client.min.js",
   "dependencies": {},
   "devDependencies": {},
   "author": "Olaf Erlandsen <olaf@heliotres.cl>",
@@ -30,5 +30,5 @@
     }
   ],
   "license": "Apache License V2.0 - 2014",
-  "homepage":"https://github.com/olaferlandsen/angular-swagger-client"
+  "homepage":"https://github.com/olaferlandsen/angular-swagger2-client"
 }
