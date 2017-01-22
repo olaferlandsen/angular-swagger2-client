@@ -2,7 +2,7 @@
   "name": "angular-swagger2-client",
   "homepage": "https://github.com/olaferlandsen/angular-swagger-client",
   "authors": [
-    "Olaf Erlandsen <olaftriskel@gmail.com>"
+    "Olaf Erlandsen <olaf@heliotres.cl>"
   ],
   "description": "A simple and powerful swagger client for angular 1.4+",
   "main": "dist/angular-swagger-clients.js",
