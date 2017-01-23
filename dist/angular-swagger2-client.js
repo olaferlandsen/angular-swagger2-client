@@ -203,11 +203,20 @@
                             formData: [],
                             query: []
                         },
+                        consumes: [],
                         params: {},
                         input: {},
                         config: {},
                         localStorage: localStorageKeysArray
                     };
+                    /**
+                     *
+                     * */
+                    if (path.hasOwnProperty('consumes') && !Utils.isEmpty(path.consumes)) {
+                        angular.forEach(path.consumes, function (item) {
+                            swaggerRequest.consumes.push(String(item).toLowerCase().trim());
+                        });
+                    }
                     /**
                      * Process parameters by api based on parametersDefinitionsObject and parameterObject
                      * @link http://swagger.io/specification/#parametersDefinitionsObject
@@ -331,7 +340,15 @@
              * @link http://stackoverflow.com/a/20276775/901197
              * */
             if (method === 'post' || method === 'put') {
-                swaggerRequest.data.headers['content-type'] = 'application/x-www-form-urlencoded; charset=utf-8';
+                /**
+                 * Enable file upload
+                 * */
+                if (swaggerRequest.consumes.indexOf('multipart/form-data') && swaggerRequest.data.formData.length > 0) {
+                    swaggerRequest.data.headers['content-type'] = 'multipart/form-dataf-8';
+                }
+                else {
+                    swaggerRequest.data.headers['content-type'] = 'application/x-www-form-urlencoded';
+                }
             }
             /**
              * Prepare formData only if the method is POST, PUT, CONNECT or PATCH

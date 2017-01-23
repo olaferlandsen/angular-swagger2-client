@@ -5,11 +5,11 @@ A simple and powerful OpenAPI/Swagger Client for Angular, based on promises to c
 * `POST`, `PUT`, `GET`, `DELETE`, `PATCH` and `CONNECT` request are supported.
 * Params in: `query`, `path`, `formData` and `header` are supported.
 * `SecuritySchema` with `security` in API are supported(only type `apiKey`).
-* By default, `PUT` and `POST` request send with `content-type: application/x-www-form-urlencoded; charset=utf-8`.
+* By default, `PUT` and `POST` request send with `content-type: application/x-www-form-urlencoded`.
 * Removes all parameters that have not been established in the API definition.
 * Implements a Pre-Validator for params and supported `data types`, `format` and `required`.
 * Global static and dynamic default value based on LocalStorage.
-* Written in TypeScript and compiled in ES5.
+* Support for uploading files using [consume](http://swagger.io/specification/#operation-object-36) in the API definition and with at least one parameter in [formData](http://swagger.io/specification/#parameterObject).
 
 ## Getting Started
 

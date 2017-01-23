@@ -8,15 +8,15 @@
             /**
              * @param {*} value
              * */
-            isNull:(value:any):boolean => {return null === value},
+            isNull      :   (value:any):boolean => {return null === value},
             /**
              * @param {*} value
              * */
-            isUndefined : (value:any):boolean => {return undefined === value},
+            isUndefined :   (value:any):boolean => {return undefined === value},
             /**
              * @param {*} value
              * */
-            isEmpty    :    (value: any)   :boolean => {
+            isEmpty     :   (value: any)   :boolean => {
                 if (value === null || value === undefined) return true;
                 else if (angular.isArray(value) || typeof value ==='string') return value.length == 0;
                 else if (angular.isObject(value)) return Object.keys(value).length == 0;
@@ -26,24 +26,24 @@
             /**
              * @param {*} value
              * */
-            isString   :    (value: any)   :boolean => {return typeof value === 'string'},
+            isString    :   (value: any)   :boolean => {return typeof value === 'string'},
             /**
              * @param {*} value
              * */
-            isInteger  :    (value: any)   :boolean => {return Number (value) === value && value % 1 === 0},
+            isInteger   :   (value: any)   :boolean => {return Number (value) === value && value % 1 === 0},
             /**
              * @param {*} value
              * */
-            isFloat    :    (value: any) :boolean => {return Number (value) === value && value % 1 !== 0},
+            isFloat     :   (value: any) :boolean => {return Number (value) === value && value % 1 !== 0},
             /**
              * @param {*} value
              * */
-            isBoolean  :    (value: any) :boolean            => {return value === true || value === false},
+            isBoolean   :   (value: any) :boolean            => {return value === true || value === false},
             /**
              * @param {string} from
              * @param {object} to
              * */
-            replace    :    (from : string, to: any) :string => {
+            replace     :   (from : string, to: any) :string => {
                 if (to === undefined || to === null) to = {};
 
                 if (!angular.isObject(to))
@@ -63,14 +63,14 @@
              * @param {*} array
              * @param {*} value
              * */
-            contains   :    (array: any, value: any) :boolean=> {return array.indexOf(value) >= 0},
+            contains    :   (array: any, value: any) :boolean=> {return array.indexOf(value) >= 0},
             /**
              *  Remove repeat item in array
              *
              * @param {*} value
              * @return Array
              * */
-            unique     : (value:any):any => {
+            unique      :   (value:any):any => {
                 let a = value.concat();
                 for(let i=0; i<a.length; ++i) {
                     for(let j=i+1; j<a.length; ++j) {
@@ -86,7 +86,7 @@
              * @param {*} value
              * @return string
              * */
-            getDataType:(value:any):string => {
+            getDataType :   (value:any):string => {
                 if (angular.isArray(value)) return 'array';
                 else if (angular.isObject(value)) return 'object';
                 else if (this.isInteger(value)) return 'integer';
@@ -102,7 +102,7 @@
              * @param {string} datatype
              * @return boolean
              * */
-            isDatatype : (value:any, datatype:string):boolean => {
+            isDatatype  :   (value:any, datatype:string):boolean => {
                 if (datatype === 'double') datatype = 'float';
                 else if (datatype === 'long') datatype = 'integer';
                 return this.getDataType(value) === datatype;
@@ -194,11 +194,21 @@
                             formData    : [],
                             query       : []
                         },
+                        consumes: [],
                         params  : {},
                         input   : {},
                         config  : {},
                         localStorage:localStorageKeysArray
                     };
+
+                    /**
+                     *
+                     * */
+                    if (path.hasOwnProperty('consumes') && !Utils.isEmpty(path.consumes)) {
+                        angular.forEach(path.consumes, function (item:string) {
+                            swaggerRequest.consumes.push(String(item).toLowerCase().trim())
+                        });
+                    }
 
                     /**
                      * Process parameters by api based on parametersDefinitionsObject and parameterObject
@@ -341,7 +351,15 @@
              * @link http://stackoverflow.com/a/20276775/901197
              * */
             if (method === 'post' || method === 'put') {
-                swaggerRequest.data.headers['content-type'] = 'application/x-www-form-urlencoded; charset=utf-8';
+                /**
+                 * Enable file upload
+                 * */
+                if (swaggerRequest.consumes.indexOf('multipart/form-data') && swaggerRequest.data.formData.length > 0) {
+                    swaggerRequest.data.headers['content-type'] = 'multipart/form-dataf-8';
+                }
+                else {
+                    swaggerRequest.data.headers['content-type'] = 'application/x-www-form-urlencoded';
+                }
             }
 
             /**
