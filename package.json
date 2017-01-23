@@ -17,7 +17,7 @@
   "bugs":{
     "url":"https://github.com/olaferlandsen/angular-swagger2-client/issues"
   },
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A simple and powerful OpenAPI/Swagger Client for Angular, based on promises to connect with endpoint using OpenAPI/Swagger Specification 2.0.",
   "main": "./dist/angular-swagger2-client.min.js",
   "dependencies": {},
