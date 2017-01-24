@@ -119,7 +119,7 @@
                     datatype = 'float';
                 else if (datatype === 'long')
                     datatype = 'integer';
-                return _this.getDataType(value) === datatype;
+                return this.getDataType(value) === datatype;
             }
         };
         return fn;
@@ -148,7 +148,6 @@
          * @param {Array} localStorageKeys
          * */
         var AngularSwagger2Client = function (jsonObject, defaultData, localStorageKeys) {
-            console.info('jsonObject:', jsonObject);
             this.api = {};
             this.host = {};
             this.localStorageKeys = localStorageKeys || [];
@@ -284,7 +283,6 @@
                      * @link https://docs.angularjs.org/api/ng/service/$http
                      * */
                     self.api[namespace][path.operationId] = function (data, config) {
-                        console.info('data #1:', data);
                         if (angular.isObject(data) && data !== null) {
                             swaggerRequest.input = angular.extend({}, swaggerRequest.input, data);
                         }
@@ -343,7 +341,7 @@
                 /**
                  * Enable file upload
                  * */
-                if (swaggerRequest.consumes.indexOf('multipart/form-data') && swaggerRequest.data.formData.length > 0) {
+                if (swaggerRequest.consumes.indexOf('multipart/form-data') > -1 && swaggerRequest.data.formData.length > 0) {
                     swaggerRequest.data.headers['content-type'] = 'multipart/form-dataf-8';
                 }
                 else {
@@ -390,7 +388,6 @@
                 });
                 finalResponse.uri += '?' + $httpParamSerializer(httpQueryObject_1);
             }
-            console.info('swaggerRequest.data.query:', swaggerRequest.data.query);
             /**
              * Apply a pre-validator: check required, data type and format
              * */
@@ -410,8 +407,6 @@
                  * @todo Check format
                  * */
             });
-            console.info('finalResponse.uri:', finalResponse.uri);
-            console.info('finalResponse.uri:', this.host);
             var httpConfig = {
                 url: this.host + finalResponse.uri,
                 method: method,

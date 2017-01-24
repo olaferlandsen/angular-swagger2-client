@@ -102,7 +102,7 @@
              * @param {string} datatype
              * @return boolean
              * */
-            isDatatype  :   (value:any, datatype:string):boolean => {
+            isDatatype  :   function (value:any, datatype:string):boolean {
                 if (datatype === 'double') datatype = 'float';
                 else if (datatype === 'long') datatype = 'integer';
                 return this.getDataType(value) === datatype;
@@ -134,7 +134,6 @@
          * @param {Array} localStorageKeys
          * */
         let AngularSwagger2Client = function (jsonObject:any, defaultData:any, localStorageKeys:any):any {
-            console.info('jsonObject:', jsonObject);
             this.api = {};
             this.host = {};
             this.localStorageKeys = localStorageKeys ||[];
@@ -278,7 +277,6 @@
                      * @link https://docs.angularjs.org/api/ng/service/$http
                      * */
                     self.api[namespace][path.operationId] = function(data:any, config:any) {
-                        console.info('data #1:', data);
                         if (angular.isObject(data) && data !== null) {
                             swaggerRequest.input = angular.extend({}, swaggerRequest.input, data);
                         }
@@ -354,7 +352,7 @@
                 /**
                  * Enable file upload
                  * */
-                if (swaggerRequest.consumes.indexOf('multipart/form-data') && swaggerRequest.data.formData.length > 0) {
+                if (swaggerRequest.consumes.indexOf('multipart/form-data') > -1 && swaggerRequest.data.formData.length > 0) {
                     swaggerRequest.data.headers['content-type'] = 'multipart/form-dataf-8';
                 }
                 else {
@@ -404,8 +402,6 @@
                 });
                 finalResponse.uri += '?' + $httpParamSerializer(httpQueryObject);
             }
-
-            console.info('swaggerRequest.data.query:', swaggerRequest.data.query);
             /**
              * Apply a pre-validator: check required, data type and format
              * */
@@ -432,10 +428,6 @@
                  * @todo Check format
                  * */
             });
-
-            console.info('finalResponse.uri:', finalResponse.uri);
-            console.info('finalResponse.uri:', this.host);
-
             let httpConfig = {
                 url     :   this.host + finalResponse.uri,
                 method  :   method,
