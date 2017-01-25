@@ -34,6 +34,10 @@
             /**
              * @param {*} value
              * */
+            isLong      :   (value: any)   :boolean => {return Number (value) === value && value % 1 === 0},
+            /**
+             * @param {*} value
+             * */
             isFloat     :   (value: any) :boolean => {return Number (value) === value && value % 1 !== 0},
             /**
              * @param {*} value
@@ -86,7 +90,7 @@
              * @param {*} value
              * @return string
              * */
-            getDataType :   (value:any):string => {
+            getDataType :   function (value:any):string {
                 if (angular.isArray(value)) return 'array';
                 else if (angular.isObject(value)) return 'object';
                 else if (this.isInteger(value)) return 'integer';
@@ -307,9 +311,15 @@
 
 
             if (angular.isObject(defaultDataObject)) {
-                swaggerRequest.input = angular.extend({}, swaggerRequest.input, defaultDataObject)
+                swaggerRequest.input = angular.extend({}, defaultDataObject, swaggerRequest.input)
             }
             angular.forEach(swaggerRequest.localStorage, function (name:any) {
+                /**
+                 * If name exists on swaggerRequst.input, so no need set it.
+                 * */
+                if (swaggerRequest.input.hasOwnProperty(name)) {
+                    return false;
+                }
                 let value = window.localStorage.getItem(name) || window.localStorage[name] || null;
                 if (value !== null && value !== undefined) {
                     swaggerRequest.input[name] = value;

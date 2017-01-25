@@ -3,7 +3,6 @@
      * @return object
      * */
     function Utils() {
-        var _this = this;
         var fn = {};
         fn = {
             /**
@@ -37,6 +36,10 @@
              * @param {*} value
              * */
             isInteger: function (value) { return Number(value) === value && value % 1 === 0; },
+            /**
+             * @param {*} value
+             * */
+            isLong: function (value) { return Number(value) === value && value % 1 === 0; },
             /**
              * @param {*} value
              * */
@@ -97,13 +100,13 @@
                     return 'array';
                 else if (angular.isObject(value))
                     return 'object';
-                else if (_this.isInteger(value))
+                else if (this.isInteger(value))
                     return 'integer';
-                else if (_this.isFloat(value))
+                else if (this.isFloat(value))
                     return 'float';
-                else if (_this.isBoolean(value))
+                else if (this.isBoolean(value))
                     return 'boolean';
-                else if (_this.isLong(value))
+                else if (this.isLong(value))
                     return 'long';
                 return 'undefined';
             },
@@ -304,9 +307,15 @@
             var serializedUriQuery;
             var self = this;
             if (angular.isObject(defaultDataObject)) {
-                swaggerRequest.input = angular.extend({}, swaggerRequest.input, defaultDataObject);
+                swaggerRequest.input = angular.extend({}, defaultDataObject, swaggerRequest.input);
             }
             angular.forEach(swaggerRequest.localStorage, function (name) {
+                /**
+                 * If name exists on swaggerRequst.input, so no need set it.
+                 * */
+                if (swaggerRequest.input.hasOwnProperty(name)) {
+                    return false;
+                }
                 var value = window.localStorage.getItem(name) || window.localStorage[name] || null;
                 if (value !== null && value !== undefined) {
                     swaggerRequest.input[name] = value;
