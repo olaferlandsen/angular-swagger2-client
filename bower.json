@@ -6,7 +6,7 @@
     "Olaf Erlandsen <olaf@heliotres.cl>"
   ],
   "description": "A simple and powerful swagger client for angular 1.4+",
-  "main": "dist/angular-swagger2-clients.js",
+  "main": "dist/angular-swagger2-client.js",
   "keywords": [
     "angular",
     "swagger",
