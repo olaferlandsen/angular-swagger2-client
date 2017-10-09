@@ -97,6 +97,8 @@
                 else if (this.isFloat(value)) return 'float';
                 else if (this.isBoolean(value)) return 'boolean';
                 else if (this.isLong(value)) return 'long';
+                else if (this.isString(value)) return 'string';
+
                 return 'undefined';
             },
             /**
@@ -261,9 +263,19 @@
                             angular.forEach(rule, function (value:any, property:any) {
                                 if (swaggerObject.securityDefinitions.hasOwnProperty(property)) {
                                     let security = swaggerObject.securityDefinitions[property];
+
+                                    switch (security.type) {
+                                        case 'basic':
+                                            security.in = 'header';
+                                            security.name = 'Authorization';
+                                            break;
+                                    }
+
                                     swaggerRequest.params[security.name] = {
+                                        "name"    :   security.name,
                                         "required":   true,
                                         "type"    :   'string',
+                                        "expected":   'string',
                                         "in"      :   security.in,
                                         "format"  :   security.type
                                     };
@@ -356,7 +368,34 @@
                 params      :   swaggerRequest.params
             };
 
-
+            /**
+             * Apply a pre-validator: check required, data type and format
+             * */
+            angular.forEach (swaggerRequest.params, function (item:any, param:any) {
+                /**
+                 * Check if is required
+                 * */
+                if (!swaggerRequest.input.hasOwnProperty(param) && item.required === true) {
+                    finalResponse.validation.push(
+                        item.name +  ' is required and should be a ' + item.expected
+                    );
+                }
+                /**
+                 * Check data type
+                 * */
+                else if (swaggerRequest.input.hasOwnProperty(param)) {
+                    if (!Utils.isDatatype(swaggerRequest.input[param], item.type)) {
+                        finalResponse.validation.push(
+                            item.name + ' should be a ' + item.expected
+                        )
+                    } else if ('header' === item.in) {
+                        swaggerRequest.data.headers[param] = swaggerRequest.input[param];
+                    }
+                }
+                /**
+                 * @todo Check format
+                 * */
+            });
 
             /**
              * By default, $http don't set content-type:application/x-www-form-urlencoded for POST and PUT
@@ -403,6 +442,7 @@
                  * */
                 swaggerRequest.data.formData = $httpParamSerializer(swaggerRequest.data.formData);
             }
+
             /**
              * Prepare query params for all methods and only if it have one or more items
              * */
@@ -418,32 +458,7 @@
                 });
                 finalResponse.uri += '?' + $httpParamSerializer(httpQueryObject);
             }
-            /**
-             * Apply a pre-validator: check required, data type and format
-             * */
-            angular.forEach (swaggerRequest.params, function (item:any, param:any) {
-                /**
-                 * Check if is required
-                 * */
-                if (!swaggerRequest.input.hasOwnProperty(param) && param.required === true) {
-                    finalResponse.validation.push(
-                        param.name +  ' is required and should be a ' + item.expected
-                    );
-                }
-                /**
-                 * Check data type
-                 * */
-                else if (swaggerRequest.input.hasOwnProperty(param)) {
-                    if (!Utils.isDatatype(swaggerRequest.input[param], param.type)) {
-                        finalResponse.validation.push(
-                            param.name + ' should be a ' + param.expected
-                        )
-                    }
-                }
-                /**
-                 * @todo Check format
-                 * */
-            });
+
             let httpConfig = angular.extend({
                 url     :   this.host + finalResponse.uri,
                 method  :   method,
