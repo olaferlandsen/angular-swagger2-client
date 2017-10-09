@@ -80,4 +80,8 @@ This parameter only accepts an array with the list of localStorage keys. These k
 
 
 ## Thanks:
+* [@pouyanh](https://github.com/pouyanh) - Add support for auth.
+* [@TomStanczyk](https://github.com/TomStanczyk) - fix bower error.
+
 This project is based on the [angular-swaggerific](https://github.com/TradeRev/angular-swaggerific) repository.
+
