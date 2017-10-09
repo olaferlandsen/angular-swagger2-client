@@ -438,12 +438,12 @@
                  * @todo Check format
                  * */
             });
-            let httpConfig = {
+            let httpConfig = angular.extend({
                 url     :   this.host + finalResponse.uri,
                 method  :   method,
                 data    :   swaggerRequest.data.formData,
                 headers :   swaggerRequest.data.headers
-            };
+            }, swaggerRequest.config);
 
             // prepare promise
             let defered = $q.defer ();
