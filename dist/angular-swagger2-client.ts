@@ -408,7 +408,7 @@
                  * Enable file upload
                  * */
                 if (swaggerRequest.consumes.indexOf('multipart/form-data') > -1 && swaggerRequest.data.formData.length > 0) {
-                    swaggerRequest.data.headers['content-type'] = 'multipart/form-dataf-8';
+                    swaggerRequest.data.headers['content-type'] = 'multipart/form-data';
                 }
                 else {
                     swaggerRequest.data.headers['content-type'] = 'application/x-www-form-urlencoded';
