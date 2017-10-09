@@ -257,7 +257,7 @@
                      * @link http://swagger.io/specification/#securitySchemeObject
                      * */
                     if (swaggerObject.hasOwnProperty('securityDefinitions')) {
-                        angular.forEach(path.security, function (rule:any) {
+                        let addSecurity = function (rule:any) {
                             angular.forEach(rule, function (value:any, property:any) {
                                 if (swaggerObject.securityDefinitions.hasOwnProperty(property)) {
                                     let security = swaggerObject.securityDefinitions[property];
@@ -272,7 +272,13 @@
                                     }
                                 }
                             })
-                        });
+                        };
+
+                        if (path.hasOwnProperty('security')) {
+                            angular.forEach(path.security, addSecurity);
+                        } else if (swaggerObject.hasOwnProperty('security')) {
+                            angular.forEach(swaggerObject.security, addSecurity);
+                        }
                     }
                     /**
                      * Create a api function
