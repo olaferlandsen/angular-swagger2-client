@@ -13,6 +13,7 @@ A simple and powerful OpenAPI/Swagger Client for Angular, based on promises to c
 
 ## Getting Started
 
+### Install
 #### Install via NPM
 ```bash
 npm install angular-swagger2-client
@@ -22,7 +23,9 @@ npm install angular-swagger2-client
 bower install angular-swagger2-client
 ```
 
-* Include the required libraries in your `index.html`:
+## Include
+
+Include the required libraries in your `index.html`:
 
 ```html
 <html>
@@ -39,13 +42,15 @@ bower install angular-swagger2-client
 > **IMPORTANT:** Where `vendor` you need replace for you downaload directory. If you ussing `bower` replace for `bower_components`, and if you using `npm` you need replace for `node_modules`
 * Inject `angular-swagger2-client` module
 
+## Inject
+
 ```javascript
 angular.module('myApp', [
 	'angular-swagger2-client'
 ])
 ```
 
-* Prepare you swagger
+## Prepare you OpenAPI/Swagger
 
 ```javascript
 angular.module('myApp', [
