@@ -1,6 +1,6 @@
 {
   "name": "angular-swagger2-client",
-  "version":"0.0.5",
+  "version":"0.0.9-beta",
   "homepage": "https://github.com/olaferlandsen/angular-swagger2-client",
   "authors": [
     "Olaf Erlandsen <olaf@heliotres.cl>"
