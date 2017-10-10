@@ -42,7 +42,8 @@ Include the required libraries in your `index.html`:
 > **IMPORTANT:** Where `vendor` you need replace for you downaload directory. If you ussing `bower` replace for `bower_components`, and if you using `npm` you need replace for `node_modules`
 * Inject `angular-swagger2-client` module
 
-## Inject
+
+## Inject
 
 ```javascript
 angular.module('myApp', [
