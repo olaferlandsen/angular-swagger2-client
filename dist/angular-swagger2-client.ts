@@ -360,6 +360,7 @@
             //
             let finalResponse:any = {
                 uri         :   swaggerRequest.uri,
+                formData    :   [],
                 status      :   null,
                 statusText  :   null,
                 data        :   null,
@@ -420,27 +421,23 @@
              * @todo learn more about when, where and how to use form data
              */
             if (['post', 'put', 'connect', 'patch'].indexOf(method) > -1) {
+                let formData:any = {};
+
                 angular.forEach(swaggerRequest.data.formData, function (name:string, index:any) {
                     if (swaggerRequest.input.hasOwnProperty(name)) {
-                        swaggerRequest.data.formData[name] = swaggerRequest.input[name];
+                        formData[name] = swaggerRequest.input[name];
                         /**
                          * If the parameter is found, it must be removed so that it is not reused in another parameter,
                          * otherwise it could generate a totally unnecessary conflict.
                          * */
                         delete swaggerRequest.input[name];
                     }
-                    /**
-                     * The user may enter data that is not required or not used and this should not represent an error.
-                     * **/
-                    else {
-                        delete swaggerRequest.data.formData[index];
-                    }
                 });
                 /**
                  * After searching and assigning the values to formData, it is necessary to convert formData
                  * into a valid notation.
                  * */
-                swaggerRequest.data.formData = $httpParamSerializer(swaggerRequest.data.formData);
+                finalResponse.formData = $httpParamSerializer(formData);
             }
 
             /**
@@ -448,12 +445,11 @@
              * */
             if (swaggerRequest.data.query.length > 0) {
                 let httpQueryObject:any = {};
+
                 angular.forEach(swaggerRequest.data.query, function (name:string, index:any) {
                     if (swaggerRequest.input.hasOwnProperty(name)) {
                         httpQueryObject[name] = swaggerRequest.input[name];
                         delete swaggerRequest.input[name];
-                    } else {
-                        delete swaggerRequest.data.query[index];
                     }
                 });
                 finalResponse.uri += '?' + $httpParamSerializer(httpQueryObject);
@@ -462,7 +458,7 @@
             let httpConfig = angular.extend({
                 url     :   this.host + finalResponse.uri,
                 method  :   method,
-                data    :   swaggerRequest.data.formData,
+                data    :   finalResponse.formData,
                 headers :   swaggerRequest.data.headers
             }, swaggerRequest.config);
 
