@@ -60,8 +60,6 @@ angular.module('myApp', [
 	.provider('Api', Api); // Define Api provider
 
 function Api() {
-	var deferred;
-
 	// This is fully described in Provider Recipe in angularjs [docs](https://docs.angularjs.org/guide/providers#provider-recipe)
 	// $get is called during dependency injection. By this your service can use other services (like SwaggerData) as dependency
 	this.$get = function(AngularSwagger2Client, SwaggerData) {
