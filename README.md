@@ -80,7 +80,7 @@ This parameter only accepts an array with the list of localStorage keys. These k
 
 
 ## Thanks:
-* [@pouyanh](https://github.com/pouyanh) - Add support for auth.
+* [@pouyanh](https://github.com/pouyanh) - [Basic-Authentication](https://github.com/olaferlandsen/angular-swagger2-client/pull/2), [security](https://github.com/olaferlandsen/angular-swagger2-client/pull/3) and [improves](https://github.com/olaferlandsen/angular-swagger2-client/pull/4).
 * [@TomStanczyk](https://github.com/TomStanczyk) - fix bower error.
 
 This project is based on the [angular-swaggerific](https://github.com/TradeRev/angular-swaggerific) repository.
