@@ -45,7 +45,7 @@ Include the required libraries in your `index.html`:
 **angular-swagger2-client** have to be injected to your angular application as a dependency
 ```javascript
 angular.module('myApp', [
-	'angular-swagger2-client'
+  'angular-swagger2-client'
 ])
 ```
 
@@ -54,17 +54,17 @@ angular.module('myApp', [
 If you have content of your api's *swagger.json* available at config time you can use **angular-swagger2-client** like this:
 ```javascript
 angular.module('myApp', [
-	'angular-swagger2-client'
+  'angular-swagger2-client'
 ])
-	.value('SwaggerData', SwaggerData) // Your api's swagger.json as a javascript object
-	.provider('Api', Api); // Define Api provider
+  .value('SwaggerData', SwaggerData) // Your api's swagger.json as a javascript object
+  .provider('Api', Api); // Define Api provider
 
 function Api() {
-	// This is fully described in Provider Recipe in angularjs [docs](https://docs.angularjs.org/guide/providers#provider-recipe)
-	// $get is called during dependency injection. By this your service can use other services (like SwaggerData) as dependency
-	this.$get = function(AngularSwagger2Client, SwaggerData) {
-		return new AngularSwagger2Client(SwaggerData)
-	};
+  // This is fully described in Provider Recipe in angularjs [docs](https://docs.angularjs.org/guide/providers#provider-recipe)
+  // $get is called during dependency injection. By this your service can use other services (like SwaggerData) as dependency
+  this.$get = function(AngularSwagger2Client, SwaggerData) {
+    return new AngularSwagger2Client(SwaggerData)
+  };
 }
 ```
 
@@ -73,39 +73,39 @@ Sometimes our *swagger.json* is hosted on the api server and we need to load it 
 So we need to use **lazy loading** pattern
 ```javascript
 angular.module('myApp', [
-	'angular-swagger2-client'
+  'angular-swagger2-client'
 ])
-	.constant('API_URL', 'https://api.my-service.com') // Url of our api server which swagger.json is hosted there
-	.provider('Api', Api); // Define Api provider
+  .constant('API_URL', 'https://api.my-service.com') // Url of our api server which swagger.json is hosted there
+  .provider('Api', Api); // Define Api provider
 
 function Api() {
-	var deferred;
+  var deferred;
 
-	// This is fully described in Provider Recipe in angularjs [docs](https://docs.angularjs.org/guide/providers#provider-recipe)
-	// $get is called during dependency injection. By this your service can use other services (like $http) as dependency
-	this.$get = function($http, $q, API_URL, AngularSwagger2Client) {
-		if (undefined === deferred) {
-			deferred = $q.defer();
-		}
+  // This is fully described in Provider Recipe in angularjs [docs](https://docs.angularjs.org/guide/providers#provider-recipe)
+  // $get is called during dependency injection. By this your service can use other services (like $http) as dependency
+  this.$get = function($http, $q, API_URL, AngularSwagger2Client) {
+    if (undefined === deferred) {
+      deferred = $q.defer();
+    }
 
-		$http.get(API_URL + "/swagger.json")
-			.success(function (data) {
-			  // Uncomment this if you don't have 'host' key defined in your swagger.json
-			  // 'host' have to refer to your API_URL without http/https://
-				// data.host = API_URL.replace(/^https?\:\/\//, "");
+    $http.get(API_URL + "/swagger.json")
+      .success(function (data) {
+        // Uncomment this if you don't have 'host' key defined in your swagger.json
+        // 'host' have to refer to your API_URL without http/https://
+        // data.host = API_URL.replace(/^https?\:\/\//, "");
 
-				deferred.resolve(new AngularSwagger2Client(data));
-			})
-			.error(function (data) {
-				deferred.reject(data);
-			});
+        deferred.resolve(new AngularSwagger2Client(data));
+      })
+      .error(function (data) {
+        deferred.reject(data);
+      });
 
-		return {
-			load: function () {
-				return deferred.promise;
-			}
-		};
-	};
+    return {
+      load: function () {
+        return deferred.promise;
+      }
+    };
+  };
 }
 ```
 
@@ -113,18 +113,18 @@ function Api() {
 Your API methods are accessible using:
 ```javascript
 AngularSwagger2Client.api[namespace][operationId](parameters, configuration)
-	.then(function (response) {
-	    // Data is available in response.data
-	    // Status is available in response.status
-	    // Status Text is available in response.statusText
-	})
-	.catch(function (response) {
-	    // Data is available in response.data
-			// Status is available in response.status
-			// Status Text is available in response.statusText
-			
-	    // If rejection was due to Validation errors they're available in response.validation array
-	});
+  .then(function (response) {
+      // Data is available in response.data
+      // Status is available in response.status
+      // Status Text is available in response.statusText
+  })
+  .catch(function (response) {
+      // Data is available in response.data
+      // Status is available in response.status
+      // Status Text is available in response.statusText
+
+      // If rejection was due to Validation errors they're available in response.validation array
+  });
 ```
 **namespace** is a slug (all braces \[,\],\{ and \} are removed) of one of these in priority:
 * path's first tag
@@ -342,298 +342,298 @@ definitions:
 Provide **User**
 ```javascript
 angular.module('myApp', [
-	'angular-md5', // angular-md5 to create password hash in sign in process
-	'angular-swagger2-client'
+  'angular-md5', // angular-md5 to create password hash in sign in process
+  'angular-swagger2-client'
 ])
-	.provider('User', User);
+  .provider('User', User);
 
 function User() {
-	this.$get = function(localStorage) {
-		return {
-			/** @return string */
-			GetUsername: function () {
-				var user = localStorage.getObject('user');
-				if (undefined !== user) {
-					if (user.hasOwnProperty('username')) {
-						return user.username;
-					}
-				}
+  this.$get = function(localStorage) {
+    return {
+      /** @return string */
+      GetUsername: function () {
+        var user = localStorage.getObject('user');
+        if (undefined !== user) {
+          if (user.hasOwnProperty('username')) {
+            return user.username;
+          }
+        }
 
-				return "";
-			},
+        return "";
+      },
 
-			/** @return string */
-			GetToken: function () {
-				var user = localStorage.getObject('user');
-				if (undefined !== user) {
-					if (user.hasOwnProperty('token')) {
-						return user.token;
-					}
-				}
+      /** @return string */
+      GetToken: function () {
+        var user = localStorage.getObject('user');
+        if (undefined !== user) {
+          if (user.hasOwnProperty('token')) {
+            return user.token;
+          }
+        }
 
-				return "";
-			}
-		};
-	};
+        return "";
+      }
+    };
+  };
 }
 ```
 
 **localStorage** Service for current user username and token storage
 ```javascript
 angular.module('myApp.services.localStorage', [])
-	.service('localStorage', localStorage);
+  .service('localStorage', localStorage);
 
 /** @ngInject */
 function localStorage($window) {
-	return {
-		set: set,
-		get: get,
-		setObject: setObject,
-		getObject: getObject,
-		clear: clear
-	};
+  return {
+    set: set,
+    get: get,
+    setObject: setObject,
+    getObject: getObject,
+    clear: clear
+  };
 
-	function set(key, value) {
-		if ($window.fakeLocalStorage) {
-			$window.fakeLocalStorage[key] = value;
-		} else {
-			$window.localStorage[key] = value;
-		}
-	}
+  function set(key, value) {
+    if ($window.fakeLocalStorage) {
+      $window.fakeLocalStorage[key] = value;
+    } else {
+      $window.localStorage[key] = value;
+    }
+  }
 
-	function get(key, defaultValue) {
-		return !$window.fakeLocalStorage ?
-			$window.localStorage[key] || defaultValue :
-			$window.fakeLocalStorage[key] || defaultValue;
-	}
+  function get(key, defaultValue) {
+    return !$window.fakeLocalStorage ?
+      $window.localStorage[key] || defaultValue :
+      $window.fakeLocalStorage[key] || defaultValue;
+  }
 
-	function setObject(key, value) {
-		if ($window.fakeLocalStorage) {
-			$window.fakeLocalStorage[key] = angular.toJson(value);
-		} else {
-			$window.localStorage[key] = angular.toJson(value);
-		}
-	}
+  function setObject(key, value) {
+    if ($window.fakeLocalStorage) {
+      $window.fakeLocalStorage[key] = angular.toJson(value);
+    } else {
+      $window.localStorage[key] = angular.toJson(value);
+    }
+  }
 
-	function getObject(key) {
-		return !$window.fakeLocalStorage ?
-			angular.fromJson($window.localStorage[key] || '{}') :
-			angular.fromJson($window.fakeLocalStorage[key] || '{}');
-	}
+  function getObject(key) {
+    return !$window.fakeLocalStorage ?
+      angular.fromJson($window.localStorage[key] || '{}') :
+      angular.fromJson($window.fakeLocalStorage[key] || '{}');
+  }
 
-	function clear() {
-		if ($window.fakeLocalStorage) {
-			$window.fakeLocalStorage = {};
-		} else {
-			$window.localStorage.clear();
-		}
-	}
+  function clear() {
+    if ($window.fakeLocalStorage) {
+      $window.fakeLocalStorage = {};
+    } else {
+      $window.localStorage.clear();
+    }
+  }
 }
 ```
 
 Sign In Page Controller
 ```javascript
 angular.module('myApp.pages.signIn')
-	.controller('SignInPageCtrl', SignInPageCtrl);
+  .controller('SignInPageCtrl', SignInPageCtrl);
 
 /** @ngInject */
 function SignInPageCtrl(localStorage, $state, Api, md5, toastr, $q) {
-	var vm = this;
+  var vm = this;
 
-	// Form
-	vm.form = {
-		model: {
-			username: '',
-			password: ''
-		}
-	};
+  // Form
+  vm.form = {
+    model: {
+      username: '',
+      password: ''
+    }
+  };
 
-	vm.form.validate = function (model) {
-		var deferred = $q.defer();
-		var errors = [];
+  vm.form.validate = function (model) {
+    var deferred = $q.defer();
+    var errors = [];
 
-		if (0 === model.username.trim().length) {
-			errors.push({
-				'field': 'username',
-				'message': "Username can't be empty or whitespace"
-			});
-		}
+    if (0 === model.username.trim().length) {
+      errors.push({
+        'field': 'username',
+        'message': "Username can't be empty or whitespace"
+      });
+    }
 
-		if (0 === model.password.trim().length) {
-			errors.push({
-				'field': 'password',
-				'message': "Password can't be empty or whitespace"
-			});
-		}
+    if (0 === model.password.trim().length) {
+      errors.push({
+        'field': 'password',
+        'message': "Password can't be empty or whitespace"
+      });
+    }
 
-		if (errors.length > 0) {
-			deferred.reject(errors);
-		} else {
-			deferred.resolve(model);
-		}
+    if (errors.length > 0) {
+      deferred.reject(errors);
+    } else {
+      deferred.resolve(model);
+    }
 
-		return deferred.promise;
-	};
+    return deferred.promise;
+  };
 
-	vm.form.sanitize = function (model) {
-		var deferred = $q.defer();
-		var cleanModel = model;
+  vm.form.sanitize = function (model) {
+    var deferred = $q.defer();
+    var cleanModel = model;
 
-		cleanModel.username = model.username.trim();
-		cleanModel.password = model.password.trim();
+    cleanModel.username = model.username.trim();
+    cleanModel.password = model.password.trim();
 
-		deferred.resolve(cleanModel);
+    deferred.resolve(cleanModel);
 
-		return deferred.promise;
-	};
+    return deferred.promise;
+  };
 
-	vm.signIn = function () {
-		vm.form.validate(vm.form.model)
-			.catch(function (errors) {
-				// Validation error
+  vm.signIn = function () {
+    vm.form.validate(vm.form.model)
+      .catch(function (errors) {
+        // Validation error
 
-				for (var i in errors) {
-					toastr.error(errors[i].message, 'Form invalid');
-				}
+        for (var i in errors) {
+          toastr.error(errors[i].message, 'Form invalid');
+        }
 
-				return Promise.reject(errors);
-			})
-			.then(vm.form.sanitize)
-			.then(function (model) {
-				return Api.load().then(function (client) {
-					client.api.sessions.createSession({
-						Authorization: 'Basic ' + btoa(model.username + ':' + md5.createHash(model.password))
-					})
-						.then(function (response) {
-						  // Login successful
-							localStorage.setObject('user', {username: response.data.username, token: response.data.token});
+        return Promise.reject(errors);
+      })
+      .then(vm.form.sanitize)
+      .then(function (model) {
+        return Api.load().then(function (client) {
+          client.api.sessions.createSession({
+            Authorization: 'Basic ' + btoa(model.username + ':' + md5.createHash(model.password))
+          })
+            .then(function (response) {
+              // Login successful
+              localStorage.setObject('user', {username: response.data.username, token: response.data.token});
 
-							$state.go('dashboard');
-						})
-						.catch(function (response) {
-						  // Login failed
-							var msg = 'Invalid Credentials';
+              $state.go('dashboard');
+            })
+            .catch(function (response) {
+              // Login failed
+              var msg = 'Invalid Credentials';
 
-							switch (response.status) {
-								case 500:
-									msg = 'Server inaccessible';
-									break;
-							}
+              switch (response.status) {
+                case 500:
+                  msg = 'Server inaccessible';
+                  break;
+              }
 
-							toastr.error(msg, 'SignIn Failed');
-						});
-				});
-			});
-	};
+              toastr.error(msg, 'SignIn Failed');
+            });
+        });
+      });
+  };
 }
 ```
 
 #### Sign Out (sessions.deleteSession)
 ```javascript
 angular.module('myApp.pages.signOut')
-	.controller('SignOutPageCtrl', SignOutPageCtrl);
+  .controller('SignOutPageCtrl', SignOutPageCtrl);
 
 /** @ngInject */
 function SignOutPageCtrl(localStorage, $state, Api, User) {
-	Api.load().then(function (client) {
-		client.api.sessions.deleteSession({
-			token: User.GetToken()
-		});
-	});
+  Api.load().then(function (client) {
+    client.api.sessions.deleteSession({
+      token: User.GetToken()
+    });
+  });
 
-	localStorage.clear();
+  localStorage.clear();
 
-	$state.go('dashboard');
+  $state.go('dashboard');
 }
 ```
 
 #### Working with entities
 ```javascript
 angular.module('myApp.pages.entities')
-	.controller('EntitiesPageCtrl', EntitiesPageCtrl);
+  .controller('EntitiesPageCtrl', EntitiesPageCtrl);
 
 /** @ngInject */
 function EntitiesPageCtrl(Api, User, $q) {
-		var vm = this;
-		
-		vm.entities = {
-			count: 0,
-			pageCount: 0,
-			list: []
-		};
-		
-		// Get filtered and paginated list of entities
-		vm.loadEntities = function (search, page, pageSize) {
-			return Api.load().then(function (client) {
-				var query = {
-					token: User.GetToken()
-				};
+    var vm = this;
+    
+    vm.entities = {
+      count: 0,
+      pageCount: 0,
+      list: []
+    };
+    
+    // Get filtered and paginated list of entities
+    vm.loadEntities = function (search, page, pageSize) {
+      return Api.load().then(function (client) {
+        var query = {
+          token: User.GetToken()
+        };
 
-				// Search
-				if (undefined !== search) {
-					if (undefined !== search.keyword) {
-						query.keyword = search.keyword;
-					}
-				}
+        // Search
+        if (undefined !== search) {
+          if (undefined !== search.keyword) {
+            query.keyword = search.keyword;
+          }
+        }
 
-				// Pagination - Page Number
-				if (undefined !== page) {
-					query.page = page;
-				}
+        // Pagination - Page Number
+        if (undefined !== page) {
+          query.page = page;
+        }
 
-				// Pagination - Page Size
-				if (undefined !== pageSize) {
-					query.pageSize = pageSize;
-				}
+        // Pagination - Page Size
+        if (undefined !== pageSize) {
+          query.pageSize = pageSize;
+        }
 
-				var deferred = $q.defer();
-				
-				client.api.entities.getEntities(query)
-					.then(function (response) {
-						vm.entities.count = response.data.count;
-						vm.entities.pageCount = response.data.pageCount;
-						vm.entities.list = [];
+        var deferred = $q.defer();
+        
+        client.api.entities.getEntities(query)
+          .then(function (response) {
+            vm.entities.count = response.data.count;
+            vm.entities.pageCount = response.data.pageCount;
+            vm.entities.list = [];
 
-						for (var i in response.data.entities) {
-							var entity = response.data.entities[i];
-							vm.entities.list.push({
-								id: entity.entityId,
-								name: entity.name
-							});
-						}
-						
-						deferred.resolve(vm.entities);
-					})
-					.catch(function (response) {
-						deferred.reject(response);
-					});
-				
-				return deferred.promise;
-			});
-		};
-		
-		// Delete an entity
-		vm.deleteEntity = function (id) {
-			Api.load().then(function (client) {
-				var query = {
-					token: User.GetToken(),
-					entityId: id
-				};
+            for (var i in response.data.entities) {
+              var entity = response.data.entities[i];
+              vm.entities.list.push({
+                id: entity.entityId,
+                name: entity.name
+              });
+            }
+            
+            deferred.resolve(vm.entities);
+          })
+          .catch(function (response) {
+            deferred.reject(response);
+          });
+        
+        return deferred.promise;
+      });
+    };
+    
+    // Delete an entity
+    vm.deleteEntity = function (id) {
+      Api.load().then(function (client) {
+        var query = {
+          token: User.GetToken(),
+          entityId: id
+        };
 
-				client.api.entities.deleteEntity(query)
-					.then(function (response) {
-						// Your entity has been deleted
-					})
-					.catch(function (response) {
-						// Prompt user: delete failed
-					});
-			});
-		};
-		
-		vm.loadEntities()
-			.then(function () {
-					// Your vm.entities is ready
-			});
+        client.api.entities.deleteEntity(query)
+          .then(function (response) {
+            // Your entity has been deleted
+          })
+          .catch(function (response) {
+            // Prompt user: delete failed
+          });
+      });
+    };
+    
+    vm.loadEntities()
+      .then(function () {
+          // Your vm.entities is ready
+      });
 }
 ```
 
