@@ -109,7 +109,7 @@
                 else if (this.isLong(value))
                     return 'long';
                 else if (this.isString(value))
-                    return 'string'
+                    return 'string';
 
                 return 'undefined';
             },
@@ -178,142 +178,154 @@
                 .replace(/\/+/, '/')
                 .replace(/(^\/+|\/+$)/, '') + '/';
             angular.forEach(swaggerObject.paths, function (paths, key) {
-                angular.forEach(paths, function (path, innerKey) {
-                    var namespace;
-                    if (!path.hasOwnProperty('tags')) {
-                        namespace = key.split('/')[1];
-                        if (Utils.isEmpty(namespace)) {
-                            namespace = swaggerObject.basePath.split('/')[1];
-                        }
-                    }
-                    else {
-                        namespace = path.tags[0];
-                    }
-                    namespace = namespace.replace(/[{}]/g, "");
-                    if (!self.api[namespace]) {
-                        self.api[namespace] = {};
-                    }
-                    if (!path.operationId) {
-                        path.operationId = innerKey;
-                    }
-                    /**
-                     * Store all api params to prepare before call it
-                     * @property {object} swaggerRequest
-                     * */
-                    var swaggerRequest = {
-                        uri: key.replace(/\/+/g, '/').replace(/(^\/|\/$)/g, '').trim(),
-                        data: {
-                            //paths       : [],
-                            headers: [],
-                            formData: [],
-                            query: []
-                        },
-                        consumes: [],
-                        params: {},
-                        input: {},
-                        config: {},
-                        localStorage: localStorageKeysArray
-                    };
-                    /**
-                     *
-                     * */
-                    if (path.hasOwnProperty('consumes') && !Utils.isEmpty(path.consumes)) {
-                        angular.forEach(path.consumes, function (item) {
-                            swaggerRequest.consumes.push(String(item).toLowerCase().trim());
-                        });
-                    }
-                    /**
-                     * Process parameters by api based on parametersDefinitionsObject and parameterObject
-                     * @link http://swagger.io/specification/#parametersDefinitionsObject
-                     * @link http://swagger.io/specification/#parameterObject
-                     * */
-                    angular.forEach(path.parameters, function (param) {
-                        if (swaggerRequest.data.hasOwnProperty(param.in)) {
-                            var expected = param.type;
-                            switch (param.type) {
-                                case 'double':
-                                    param.type = 'float';
-                                    break;
-                                case 'long':
-                                    param.type = 'integer';
-                                    break;
-                                case 'byte':
-                                case 'binary':
-                                case 'date':
-                                case 'dateTime':
-                                case 'password':
-                                    param.type = 'string';
-                                    break;
-                                default:
-                                    expected = param.type;
-                                    break;
-                            }
-                            swaggerRequest.params[param.name] = {
-                                "name": param.name,
-                                "required": param.required === true,
-                                "type": param.type || 'string',
-                                "expected": expected,
-                                "in": param.in,
-                                "format": param.format || 'string'
-                            };
-                            swaggerRequest.data[param.in].push(param.name);
-                        }
-                    });
-                    /**
-                     * Process security definitions based on securityDefinitionsObject and securitySchemeObject
-                     * @link http://swagger.io/specification/#securityDefinitionsObject
-                     * @link http://swagger.io/specification/#securitySchemeObject
-                     * */
-                    if (swaggerObject.hasOwnProperty('securityDefinitions')) {
-                        var addSecurity = function (rule) {
-                            angular.forEach(rule, function (value, property) {
-                                if (swaggerObject.securityDefinitions.hasOwnProperty(property)) {
-                                    var security = swaggerObject.securityDefinitions[property];
+								angular.forEach(paths, function (path, innerKey) {
+									if (undefined !== path.operationId) {
+										var namespace;
+										if (!path.hasOwnProperty('tags')) {
+											namespace = key.split('/')[1];
+											if (Utils.isEmpty(namespace)) {
+												namespace = swaggerObject.basePath.split('/')[1];
+											}
+										}
+										else {
+											namespace = path.tags[0];
+										}
+										namespace = namespace.replace(/[{}]/g, "");
+										if (!self.api[namespace]) {
+											self.api[namespace] = {};
+										}
+										if (!path.operationId) {
+											path.operationId = innerKey;
+										}
+										/**
+										 * Store all api params to prepare before call it
+										 * @property {object} swaggerRequest
+										 * */
+										var swaggerRequest = {
+											uri: key.replace(/\/+/g, '/').replace(/(^\/|\/$)/g, '').trim(),
+											data: {
+												//paths       : [],
+												headers: [],
+												body: [],
+												formData: [],
+												query: []
+											},
+											consumes: [],
+											params: {},
+											input: {},
+											config: {},
+											localStorage: localStorageKeysArray
+										};
+										/**
+										 *
+										 * */
+										if (path.hasOwnProperty('consumes') && !Utils.isEmpty(path.consumes)) {
+											angular.forEach(path.consumes, function (item) {
+												swaggerRequest.consumes.push(String(item).toLowerCase().trim());
+											});
+										}
+										/**
+										 * Process parameters by api based on parametersDefinitionsObject and parameterObject
+										 * @link http://swagger.io/specification/#parametersDefinitionsObject
+										 * @link http://swagger.io/specification/#parameterObject
+										 * */
+										var parameters = [];
+										if (Array.isArray(paths.parameters)) {
+											parameters = parameters.concat(paths.parameters);
+										}
+										if (Array.isArray(path.parameters)) {
+											parameters = parameters.concat(path.parameters);
+										}
 
-                                    switch (security.type) {
-                                        case 'basic':
-                                            security.in = 'header';
-                                            security.name = 'Authorization';
-                                            break;
-                                    }
+										angular.forEach(parameters, function (param) {
+											if (swaggerRequest.data.hasOwnProperty(param.in)) {
+												switch (param.type) {
+													case 'double':
+														param.type = 'float';
+														break;
 
-                                    swaggerRequest.params[security.name] = {
-                                        "name": security.name,
-                                        "required": true,
-                                        "type": 'string',
-                                        "expected": 'string',
-                                        "in": security.in,
-                                        "format": security.type
-                                    };
-                                    if (swaggerRequest.data.hasOwnProperty(security.in)) {
-                                        swaggerRequest.data[security.in].push(security.name);
-                                    }
-                                }
-                            });
-                        };
+													case 'long':
+														param.type = 'integer';
+														break;
 
-                        if (path.hasOwnProperty('security')) {
-                            angular.forEach(path.security, addSecurity);
-                        } else if (swaggerObject.hasOwnProperty('security')) {
-                            angular.forEach(swaggerObject.security, addSecurity);
-                        }
-                    }
-                    /**
-                     * Create a api function
-                     * @param {object} data - This object need contains all params you need passed
-                     * @param {object} config - If you need set you own config, you need set a object based on $http
-                     * @link https://docs.angularjs.org/api/ng/service/$http
-                     * */
-                    self.api[namespace][path.operationId] = function (data, config) {
-                        if (angular.isObject(data) && data !== null) {
-                            swaggerRequest.input = angular.extend({}, swaggerRequest.input, data);
-                        }
-                        if (angular.isObject(config) && config !== null) {
-                            swaggerRequest.config = angular.extend({}, swaggerRequest.config, config);
-                        }
-                        return self.trigger(key, innerKey, swaggerRequest);
-                    };
-                });
+													case 'byte':
+													case 'binary':
+													case 'date':
+													case 'dateTime':
+													case 'password':
+														param.type = 'string';
+														break;
+												}
+												var expected = param.type;
+
+												swaggerRequest.params[param.name] = {
+													"name": param.name,
+													"required": param.required === true,
+													"type": param.type,
+													"expected": expected,
+													"in": param.in,
+													"format": param.format || 'string'
+												};
+												swaggerRequest.data[param.in].push(param.name);
+											}
+										});
+										/**
+										 * Process security definitions based on securityDefinitionsObject and securitySchemeObject
+										 * @link http://swagger.io/specification/#securityDefinitionsObject
+										 * @link http://swagger.io/specification/#securitySchemeObject
+										 * */
+										if (swaggerObject.hasOwnProperty('securityDefinitions')) {
+											var addSecurity = function (rule) {
+												angular.forEach(rule, function (value, property) {
+													if (swaggerObject.securityDefinitions.hasOwnProperty(property)) {
+														var security = swaggerObject.securityDefinitions[property];
+
+														switch (security.type) {
+															case 'basic':
+																security.in = 'header';
+																security.name = 'Authorization';
+																break;
+														}
+
+														swaggerRequest.params[security.name] = {
+															"name": security.name,
+															"required": true,
+															"type": 'string',
+															"expected": 'string',
+															"in": security.in,
+															"format": security.type
+														};
+														if (swaggerRequest.data.hasOwnProperty(security.in)) {
+															swaggerRequest.data[security.in].push(security.name);
+														}
+													}
+												});
+											};
+
+											if (path.hasOwnProperty('security')) {
+												angular.forEach(path.security, addSecurity);
+											} else if (swaggerObject.hasOwnProperty('security')) {
+												angular.forEach(swaggerObject.security, addSecurity);
+											}
+										}
+
+										/**
+										 * Create a api function
+										 * @param {object} data - This object need contains all params you need passed
+										 * @param {object} config - If you need set you own config, you need set a object based on $http
+										 * @link https://docs.angularjs.org/api/ng/service/$http
+										 * */
+										self.api[namespace][path.operationId] = function (data, config) {
+											if (angular.isObject(data) && data !== null) {
+												swaggerRequest.input = angular.extend({}, swaggerRequest.input, data);
+											}
+											if (angular.isObject(config) && config !== null) {
+												swaggerRequest.config = angular.extend({}, swaggerRequest.config, config);
+											}
+											return self.trigger(key, innerKey, swaggerRequest);
+										};
+									}
+								});
             });
         };
         /**
@@ -352,7 +364,8 @@
             //
             var finalResponse = {
                 uri: swaggerRequest.uri,
-                formData: [],
+                formData: undefined,
+                body: undefined,
                 status: null,
                 statusText: null,
                 data: null,
@@ -371,7 +384,7 @@
                 if (!swaggerRequest.input.hasOwnProperty(param) && item.required === true) {
                     finalResponse.validation.push(item.name + ' is required and should be a ' + item.expected);
                 } else if (swaggerRequest.input.hasOwnProperty(param)) {
-                    if (!Utils.isDatatype(swaggerRequest.input[param], item.type)) {
+                    if (undefined !== item.type && !Utils.isDatatype(swaggerRequest.input[param], item.type)) {
                         finalResponse.validation.push(item.name + ' should be a ' + item.expected);
                     } else if ('header' === item.in) {
                         swaggerRequest.data.headers[param] = swaggerRequest.input[param];
@@ -382,47 +395,68 @@
                  * */
             });
 
-            /**
-             * By default, $http don't set content-type:application/x-www-form-urlencoded for POST and PUT
-             * So, if you need send a POST or PUT, angular-swagger2-client set this header.
-             * Learn more about this case in the link
-             * @link http://stackoverflow.com/a/20276775/901197
-             * */
-            if (method === 'post' || method === 'put') {
-                /**
-                 * Enable file upload
-                 * */
-                if (swaggerRequest.consumes.indexOf('multipart/form-data') > -1 && swaggerRequest.data.formData.length > 0) {
-                    swaggerRequest.data.headers['content-type'] = 'multipart/form-data';
-                }
-                else {
-                    swaggerRequest.data.headers['content-type'] = 'application/x-www-form-urlencoded';
-                }
-            }
+						/**
+						 * Prepare body only if the method is POST, PUT, CONNECT, PATCH or DELETE
+						 * @todo learn more about when, where and how to use form data
+						 */
+						if (['post', 'put', 'connect', 'patch', 'delete'].indexOf(method) > -1) {
+							var formData = {};
+							var body = {};
 
-            /**
-             * Prepare formData only if the method is POST, PUT, CONNECT or PATCH
-             * @todo learn more about when, where and how to use form data
-             */
-            if (['post', 'put', 'connect', 'patch'].indexOf(method) > -1) {
-                var formData = {};
+							angular.forEach(swaggerRequest.data.body, function (name, index) {
+								if (swaggerRequest.input.hasOwnProperty(name)) {
+									body[name] = swaggerRequest.input[name];
+									/**
+									 * If the parameter is found, it must be removed so that it is not reused in another parameter,
+									 * otherwise it could generate a totally unnecessary conflict.
+									 * */
+									delete swaggerRequest.input[name];
+								}
+							});
 
-                angular.forEach(swaggerRequest.data.formData, function (name, index) {
-                    if (swaggerRequest.input.hasOwnProperty(name)) {
-                        formData[name] = swaggerRequest.input[name];
-                        /**
-                         * If the parameter is found, it must be removed so that it is not reused in another parameter,
-                         * otherwise it could generate a totally unnecessary conflict.
-                         * */
-                        delete swaggerRequest.input[name];
-                    }
-                });
-                /**
-                 * After searching and assigning the values to formData, it is necessary to convert formData
-                 * into a valid notation.
-                 * */
-                finalResponse.formData = $httpParamSerializer(formData);
-            }
+							angular.forEach(swaggerRequest.data.formData, function (name, index) {
+								if (swaggerRequest.input.hasOwnProperty(name)) {
+									formData[name] = swaggerRequest.input[name];
+									/**
+									 * If the parameter is found, it must be removed so that it is not reused in another parameter,
+									 * otherwise it could generate a totally unnecessary conflict.
+									 * */
+									delete swaggerRequest.input[name];
+								}
+							});
+
+							if (Object.keys(body).length > 0) {
+								/**
+								 * After searching and assigning the values to formData, it is necessary to convert body
+								 * into a valid notation.
+								 * */
+								finalResponse.body = body;
+							}
+
+							if (Object.keys(formData).length > 0) {
+								/**
+								 * By default, $http don't set content-type:application/x-www-form-urlencoded for POST and PUT
+								 * So, if you need send a POST or PUT, angular-swagger2-client set this header.
+								 * Learn more about this case in the link
+								 * @link http://stackoverflow.com/a/20276775/901197
+								 * */
+
+								/**
+								 * Enable file upload
+								 * */
+								if (swaggerRequest.consumes.indexOf('multipart/form-data') > -1) {
+									swaggerRequest.data.headers['content-type'] = 'multipart/form-data';
+								} else {
+									swaggerRequest.data.headers['content-type'] = 'application/x-www-form-urlencoded';
+								}
+
+								/**
+								 * After searching and assigning the values to formData, it is necessary to convert formData
+								 * into a valid notation.
+								 * */
+								finalResponse.formData = $httpParamSerializer(formData);
+							}
+						}
 
             /**
              * Prepare query params for all methods and only if it have one or more items
@@ -443,7 +477,7 @@
             var httpConfig = angular.extend({
                 url: this.host + finalResponse.uri,
                 method: method,
-                data: finalResponse.formData,
+                data: finalResponse.formData || finalResponse.body,
                 headers: swaggerRequest.data.headers
             }, swaggerRequest.config);
             // prepare promise
